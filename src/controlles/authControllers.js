@@ -12,11 +12,13 @@ export async function createUser(req, res) {
   const usuarioSchema = joi.object({
     name: joi.string().required(),
     email: joi.string().email().required(),
+    photo:joi.string().uri().required(),
     password: joi.string().required(),
   });
   const usuario = {
     name: body.name,
     email: body.email,
+    photo: body.photo,
     password:body.password
   }
   
@@ -50,7 +52,7 @@ export async function loginUser(req, res) {
 
   if (userdb && bcrypt.compareSync(usuario.password, userdb.password)) {
     const token = uuid();
-    const {name,email}=userdb;
+    const {name,email, photo}=userdb;
 
     await db.collection('sessoes').insertOne({
       //name,
@@ -58,7 +60,7 @@ export async function loginUser(req, res) {
       userId: userdb._id
     });
 
-    return res.status(201).send({ name, email, token });
+    return res.status(201).send({ name, email, photo, token });
   } else {
     return res.status(401).send('Senha ou email incorretos!');
   }
