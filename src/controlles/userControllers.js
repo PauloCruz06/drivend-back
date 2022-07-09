@@ -8,9 +8,14 @@ export async function postMovies(req, res){
         if(!body) return res.sendStatus(422);
         
         const value = await movieSchemaValidation(body);
-        if(value.error) return res.sendStatus(422);
+        if(value.error) return res.status(422).send(value.error.details);
 
-        await db.collection("movies").insertOne(body);
+        const movie = {
+            productId: Date.now().toString(),
+            ...body
+        };
+
+        await db.collection("movies").insertOne(movie);
         res.sendStatus(201);
     } catch(e){
         res.status(500).send(e);

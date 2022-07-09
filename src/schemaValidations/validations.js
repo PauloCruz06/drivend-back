@@ -2,7 +2,6 @@ import Joi from "joi";
 
 export async function movieSchemaValidation(body){
     const schema = Joi.object({
-        productId: Joi.string().required(),
         title: Joi.string().required(),
         director: Joi.string().required(),
         year: Joi.string().pattern(/^[0-9]{4}$/),
@@ -29,7 +28,6 @@ export async function movieSchemaValidation(body){
     });
 
     const value = schema.validate({
-        productId: body.productId,
         title: body.title,
         director: body.director,
         year: body.year,
