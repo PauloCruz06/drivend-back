@@ -42,3 +42,27 @@ export async function movieSchemaValidation(body){
 
     return value;
 }
+
+export async function purchaseSchemaValidation(body){
+    const schema = Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string().email().required(),
+        price: Joi.string().pattern(/^[0-9]*\.[0-9]{2}$/).required(),
+        products: Joi.array().items(Joi.object({
+            image: Joi.string().uri().required(),
+            title: Joi.string().required(),
+            value: Joi.string().pattern(/^[0-9]*\.[0-9]{2}$/).required(),
+            selleremail: Joi.string().email().required(),
+            productId: Joi.string().required()  
+        })).min(1).required()
+    });
+
+    const value = schema.validate({
+        name: body.name,
+        email: body.email,
+        price: body.price,
+        products: body.products
+    });
+
+    return value;
+}
