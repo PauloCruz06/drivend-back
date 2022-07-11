@@ -54,8 +54,9 @@ export async function loginUser(req, res) {
     const token = uuid();
     const {name,email, photo}=userdb;
 
+    await db.collection("sessoes").deleteMany({ userId: userdb._id });
+
     await db.collection('sessoes').insertOne({
-      //name,
       token,
       userId: userdb._id
     });
