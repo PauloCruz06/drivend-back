@@ -25,9 +25,29 @@ export async function postMovies(req, res){
     }
 }
 
+export async function getPurchases(_, res){
+    const { session } = res.locals;
+    if(!session) return res.sendStatus(422);
+
+    try{
+        const user = await db.collection("usuarios").findOne({ _id: session.userId });
+        if(!user) return res.sendStatus(404);
+
+        const userPurchases = await db.collection("purchases").find({ email: user.email }).toArray();
+        if(!userPurchases) return res.sendStatus(404);
+
+        userPurchases.forEach((purchase) =>
+            delete purchase._id
+        );
+        res.status(200).send(userPurchases);
+    } catch(e){
+        res.status(500).send(e);
+    }
+}
+
 export async function postPurchase(req, res){
     const body = req.body;
-
+    console.log(res.locals.session);
     try{
         if(!body) return res.sendStatus(422);
 
@@ -45,7 +65,7 @@ export async function postPurchase(req, res){
         }
 
         await db.collection("purchases").insertOne(purchase);
-        res.sendStatus(201);
+        res.status(201).send(purchase);
     } catch(e){
         res.status(500).send(e);
     }
