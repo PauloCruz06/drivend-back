@@ -47,7 +47,7 @@ export async function getPurchases(_, res){
 
 export async function postPurchase(req, res){
     const body = req.body;
-    console.log(res.locals.session);
+
     try{
         if(!body) return res.sendStatus(422);
 
